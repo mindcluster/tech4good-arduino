@@ -1,4 +1,5 @@
 #include <Adafruit_SSD1306.h>
+#include <ArduinoJson.h>
 
 #define SCREEN_ADDRESS 0x3C
 
@@ -6,34 +7,39 @@ int potentiometerSensor = A2;
 int uvSensor = A1;
 int tempSensor = A0;
 
-float ph;
-float temp;
-float uv;
-
 Adafruit_SSD1306 oled(128, 64);
+
+const unsigned short tamanhoJson = 100;
 
 void setup() {
   pinMode(potentiometerSensor, INPUT);
   pinMode(uvSensor, INPUT);
   pinMode(tempSensor, INPUT);
 
-  Serial.begin(9600);
-
   oled.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
   oled.clearDisplay();
+
+  Serial.begin(9600);
 }
 
 void loop() {
-  ph = readPh(potentiometerSensor);
-  uv = readUv(uvSensor);
-  temp = readTemp(tempSensor);
-	 
-  writeOled("Luminosidade: " + String(uv) + "\nTemperatura: " + String(temp) + "\nPH:" + String(ph));
-	
-  //delay de 30 segundos entre a captura de informações
-  //delay(30000);
+  float ph = readPh(potentiometerSensor);
+  float uv = readUv(uvSensor);
+  float temp = readTemp(tempSensor);
 
-  delay(1000);
+  writeOled("Luminosidade: " + String(uv) + "\nTemperatura: " + String(temp) + "\nPH:" + String(ph));
+
+  StaticJsonDocument<tamanhoJson> json;
+
+  json["phSensor"] = ph;
+  json["uvSensor"] = uv;
+  json["tempSensor"] = temp;
+
+  serializeJson(json, Serial);
+  Serial.println();
+	 
+  //delay de 30 segundos entre a captura de informações
+  delay(10000);
 }
 
 float readPh(int phSensor) {

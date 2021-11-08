@@ -1,0 +1,276 @@
+[
+    {
+        "id": "3346d51aa6c34a1b",
+        "type": "tab",
+        "label": "Mindcluster",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "66b6a5efdf0f5b1e",
+        "type": "serial in",
+        "z": "3346d51aa6c34a1b",
+        "name": "Serial In COM4",
+        "serial": "a060899acb167b5c",
+        "x": 100,
+        "y": 240,
+        "wires": [
+            [
+                "25885d07949d43fa"
+            ]
+        ]
+    },
+    {
+        "id": "25885d07949d43fa",
+        "type": "json",
+        "z": "3346d51aa6c34a1b",
+        "name": "Json Deserializer",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 310,
+        "y": 240,
+        "wires": [
+            [
+                "7246f0aa0fdf9c0b",
+                "eddd4efadf9cfdd8",
+                "3e88f0fcaa49bffb",
+                "60d7c3fce58ab45b"
+            ]
+        ]
+    },
+    {
+        "id": "57ca954dcf35a724",
+        "type": "ui_gauge",
+        "z": "3346d51aa6c34a1b",
+        "name": "Temp Gauge",
+        "group": "a1c11911d65b2c47",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "",
+        "label": "Graus Celsius",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "200",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 830,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "8d51c03a06526a77",
+        "type": "ui_gauge",
+        "z": "3346d51aa6c34a1b",
+        "name": "UV Gauge",
+        "group": "9022e346b0c4c468",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "",
+        "label": "UV",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "1000",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 830,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "7246f0aa0fdf9c0b",
+        "type": "change",
+        "z": "3346d51aa6c34a1b",
+        "name": "Json PH Sensor",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.phSensor",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 560,
+        "y": 180,
+        "wires": [
+            [
+                "b1f2ed043d24b1cc"
+            ]
+        ]
+    },
+    {
+        "id": "b1f2ed043d24b1cc",
+        "type": "ui_gauge",
+        "z": "3346d51aa6c34a1b",
+        "name": "PH Gauge",
+        "group": "c04019a9fa2c7431",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "",
+        "label": "PH",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "14",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 830,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "eddd4efadf9cfdd8",
+        "type": "change",
+        "z": "3346d51aa6c34a1b",
+        "name": "Json UV Sensor",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.uvSensor",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 560,
+        "y": 260,
+        "wires": [
+            [
+                "8d51c03a06526a77"
+            ]
+        ]
+    },
+    {
+        "id": "3e88f0fcaa49bffb",
+        "type": "change",
+        "z": "3346d51aa6c34a1b",
+        "name": "Json Temp Sensor",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.tempSensor",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 570,
+        "y": 340,
+        "wires": [
+            [
+                "57ca954dcf35a724"
+            ]
+        ]
+    },
+    {
+        "id": "60d7c3fce58ab45b",
+        "type": "debug",
+        "z": "3346d51aa6c34a1b",
+        "name": "Debug Entrada",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 420,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "a060899acb167b5c",
+        "type": "serial-port",
+        "serialport": "COM4",
+        "serialbaud": "9600",
+        "databits": "8",
+        "parity": "none",
+        "stopbits": "1",
+        "waitfor": "",
+        "dtr": "none",
+        "rts": "none",
+        "cts": "none",
+        "dsr": "none",
+        "newline": "\\n",
+        "bin": "false",
+        "out": "char",
+        "addchar": "",
+        "responsetimeout": "10000"
+    },
+    {
+        "id": "a1c11911d65b2c47",
+        "type": "ui_group",
+        "name": "Temperatura",
+        "tab": "20dd1b6356a1bd44",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "9022e346b0c4c468",
+        "type": "ui_group",
+        "name": "UV",
+        "tab": "20dd1b6356a1bd44",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "c04019a9fa2c7431",
+        "type": "ui_group",
+        "name": "PH",
+        "tab": "20dd1b6356a1bd44",
+        "order": 3,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "20dd1b6356a1bd44",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
