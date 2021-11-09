@@ -13,8 +13,8 @@
         "z": "3346d51aa6c34a1b",
         "name": "Serial In COM4",
         "serial": "a060899acb167b5c",
-        "x": 100,
-        "y": 240,
+        "x": 80,
+        "y": 340,
         "wires": [
             [
                 "25885d07949d43fa"
@@ -29,14 +29,16 @@
         "property": "payload",
         "action": "",
         "pretty": false,
-        "x": 310,
-        "y": 240,
+        "x": 290,
+        "y": 340,
         "wires": [
             [
                 "7246f0aa0fdf9c0b",
                 "eddd4efadf9cfdd8",
                 "3e88f0fcaa49bffb",
-                "60d7c3fce58ab45b"
+                "60d7c3fce58ab45b",
+                "1d75ac679d699f7f",
+                "2353093f9350c843"
             ]
         ]
     },
@@ -62,22 +64,22 @@
         ],
         "seg1": "",
         "seg2": "",
-        "x": 830,
-        "y": 340,
+        "x": 810,
+        "y": 440,
         "wires": []
     },
     {
         "id": "8d51c03a06526a77",
         "type": "ui_gauge",
         "z": "3346d51aa6c34a1b",
-        "name": "UV Gauge",
+        "name": "Lum Gauge",
         "group": "9022e346b0c4c468",
         "order": 0,
         "width": 0,
         "height": 0,
         "gtype": "gage",
         "title": "",
-        "label": "UV",
+        "label": "Luminosidade",
         "format": "{{value}}",
         "min": 0,
         "max": "1000",
@@ -88,8 +90,8 @@
         ],
         "seg1": "",
         "seg2": "",
-        "x": 830,
-        "y": 260,
+        "x": 810,
+        "y": 340,
         "wires": []
     },
     {
@@ -112,7 +114,7 @@
         "to": "",
         "reg": false,
         "x": 560,
-        "y": 180,
+        "y": 240,
         "wires": [
             [
                 "b1f2ed043d24b1cc"
@@ -141,21 +143,21 @@
         ],
         "seg1": "",
         "seg2": "",
-        "x": 830,
-        "y": 180,
+        "x": 810,
+        "y": 240,
         "wires": []
     },
     {
         "id": "eddd4efadf9cfdd8",
         "type": "change",
         "z": "3346d51aa6c34a1b",
-        "name": "Json UV Sensor",
+        "name": "Json Lum Sensor",
         "rules": [
             {
                 "t": "set",
                 "p": "payload",
                 "pt": "msg",
-                "to": "payload.uvSensor",
+                "to": "payload.lumSensor",
                 "tot": "msg"
             }
         ],
@@ -164,8 +166,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 560,
-        "y": 260,
+        "x": 570,
+        "y": 340,
         "wires": [
             [
                 "8d51c03a06526a77"
@@ -192,7 +194,7 @@
         "to": "",
         "reg": false,
         "x": 570,
-        "y": 340,
+        "y": 440,
         "wires": [
             [
                 "57ca954dcf35a724"
@@ -203,7 +205,7 @@
         "id": "60d7c3fce58ab45b",
         "type": "debug",
         "z": "3346d51aa6c34a1b",
-        "name": "Debug Entrada",
+        "name": "Debug In",
         "active": true,
         "tosidebar": true,
         "console": false,
@@ -212,9 +214,129 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 420,
-        "y": 460,
+        "x": 260,
+        "y": 500,
         "wires": []
+    },
+    {
+        "id": "1d75ac679d699f7f",
+        "type": "http request",
+        "z": "3346d51aa6c34a1b",
+        "name": "POST Firebase",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "https://mindcluster-node-red-default-rtdb.firebaseio.com/data.json",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 560,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "48cb04cb7ad16848",
+        "type": "serial out",
+        "z": "3346d51aa6c34a1b",
+        "name": "Serial Out COM4",
+        "serial": "a060899acb167b5c",
+        "x": 1190,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "2353093f9350c843",
+        "type": "function",
+        "z": "3346d51aa6c34a1b",
+        "name": "Check Alert",
+        "func": "var ph = msg.payload.phSensor;\nvar temp = msg.payload.tempSensor;\nvar lum = msg.payload.lumSensor;\n\nmsg.alert = false;\n\nif((ph > 9.5 || ph < 6) || \n   (temp > 35 || temp < 10) ||\n   (lum < 300))\n{\n    msg.alert = true;\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 140,
+        "wires": [
+            [
+                "a7d02e68b44bc715"
+            ]
+        ]
+    },
+    {
+        "id": "a7d02e68b44bc715",
+        "type": "switch",
+        "z": "3346d51aa6c34a1b",
+        "name": "Activate Alert",
+        "property": "alert",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 810,
+        "y": 140,
+        "wires": [
+            [
+                "48cb04cb7ad16848",
+                "9c19ec0c1fb0d21a"
+            ]
+        ]
+    },
+    {
+        "id": "3a18c3e15bc5faef",
+        "type": "twitter out",
+        "z": "3346d51aa6c34a1b",
+        "twitter": "",
+        "name": "Tweet Alert",
+        "x": 1450,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "eb37221fe6245bdf",
+        "type": "debug",
+        "z": "3346d51aa6c34a1b",
+        "name": "Tweet Value",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1450,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "9c19ec0c1fb0d21a",
+        "type": "function",
+        "z": "3346d51aa6c34a1b",
+        "name": "Configure Tweet",
+        "func": "msg.payload = \"Alerta para a qualidade da água do Rio Pinheiros! \\nPH: \" + msg.payload.phSensor.toFixed(2) + \"\\nTemperatura: \" + msg.payload.tempSensor.toFixed(2) + \" °C\" + \"\\nLuminosidade: \" + msg.payload.lumSensor.toFixed(2);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1180,
+        "y": 220,
+        "wires": [
+            [
+                "3a18c3e15bc5faef",
+                "eb37221fe6245bdf"
+            ]
+        ]
     },
     {
         "id": "a060899acb167b5c",
@@ -248,7 +370,7 @@
     {
         "id": "9022e346b0c4c468",
         "type": "ui_group",
-        "name": "UV",
+        "name": "Luminosidade",
         "tab": "20dd1b6356a1bd44",
         "order": 2,
         "disp": true,

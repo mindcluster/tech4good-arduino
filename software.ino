@@ -3,43 +3,46 @@
 
 #define SCREEN_ADDRESS 0x3C
 
-int potentiometerSensor = A2;
-int uvSensor = A1;
-int tempSensor = A0;
+const unsigned short tempSensor = A0;
+const unsigned short lumSensor = A1;
+const unsigned short potentiometerSensor = A2;
+const unsigned short led = 8;
 
-Adafruit_SSD1306 oled(128, 64);
+const Adafruit_SSD1306 screen(128, 64);
 
-const unsigned short tamanhoJson = 100;
+const unsigned short jsonLenght = 50;
 
 void setup() {
-  pinMode(potentiometerSensor, INPUT);
-  pinMode(uvSensor, INPUT);
   pinMode(tempSensor, INPUT);
+  pinMode(lumSensor, INPUT);
+  pinMode(potentiometerSensor, INPUT);
+  pinMode(led, OUTPUT);
 
-  oled.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
-  oled.clearDisplay();
+  screen.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
+  screen.clearDisplay();
 
   Serial.begin(9600);
 }
 
 void loop() {
-  float ph = readPh(potentiometerSensor);
-  float uv = readUv(uvSensor);
-  float temp = readTemp(tempSensor);
+  const float temp = readTemp(tempSensor);
+  const float ph = readPh(potentiometerSensor);
+  const float lum = readLum(lumSensor);
+  
+  writeScreen("Luminosidade: " + String(lum) + "\nTemperatura: " + String(temp) + "\nPH:" + String(ph));
 
-  writeOled("Luminosidade: " + String(uv) + "\nTemperatura: " + String(temp) + "\nPH:" + String(ph));
-
-  StaticJsonDocument<tamanhoJson> json;
-
+  StaticJsonDocument<jsonLenght> json;
   json["phSensor"] = ph;
-  json["uvSensor"] = uv;
+  json["lumSensor"] = lum;
   json["tempSensor"] = temp;
 
   serializeJson(json, Serial);
   Serial.println();
+
+  verifyAlert();
 	 
   //delay de 30 segundos entre a captura de informações
-  delay(10000);
+  delay(30000);
 }
 
 float readPh(int phSensor) {
@@ -49,14 +52,14 @@ float readPh(int phSensor) {
   return phSimulator;
 }
 
-float readUv(int uvSensor) {
+float readLum(int uvSensor) {
   //Transforma em um valor de luminosidade mais coerente
   float rdark = 127410.0;
   int r1 = 10000;
   int vo = analogRead(uvSensor);
   float rldr = r1 * (1023.0 / (float)vo - 1.0);
-  float lux = pow(rdark / rldr, 1 / 0.8582);
-  return lux;
+  float lum = pow(rdark / rldr, 1 / 0.8582);
+  return lum;
 }
 
 float readTemp(int tempSensor) {
@@ -73,12 +76,22 @@ float readTemp(int tempSensor) {
   return tc;
 }
 
-void writeOled(String text) {
-  oled.clearDisplay();
-  oled.setTextSize(1);
-  oled.setTextColor(SSD1306_WHITE);
-  oled.setCursor(1, 1);
-  oled.print(text);
-  oled.display();
+void writeScreen(String text) {
+  screen.clearDisplay();
+  screen.setTextSize(1);
+  screen.setTextColor(SSD1306_WHITE);
+  screen.setCursor(1, 1);
+  screen.print(text);
+  screen.display();
+}
+
+void verifyAlert() {
+  String response = Serial.readStringUntil("\n");
+  if(response.length() > 0) {
+    digitalWrite(led, HIGH); 
+  }
+  else {
+    digitalWrite(led, LOW); 
+  }
 }
 
