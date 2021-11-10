@@ -1,5 +1,7 @@
 # Tech 4 Good - Arduino
 
+Hardware e software onde o arduino coleta a cada 30 segundos as informações dos sensores (pH, temperatura e turbidez) e pública cada dado em um tópico via protocolo MQTT. O sistema no Node-Red irá subscrever os tópicos MQTT e irá salvar os dados em um banco de dados Firebase além de exibir as informações em um dashboard para monitoramento do usuário. É realizado o acionamento de um alarme no Arduino utilizando um LED, acionado via tópico do MQTT. Também é feita a publicação no Twitter sempre que o alarme for acionado.
+
 ## Arduino
 
 Modelo físico da placa Arduino e sensores potenciometro, luminosidade e temperatura.
